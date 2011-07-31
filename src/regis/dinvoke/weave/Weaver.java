@@ -12,6 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -27,9 +28,9 @@ import regis.dinvoke.InvokeDynamic;
 
 public class Weaver {
 
-	private Set<MethodEntry> dynamicMethods;
+	private Map<String, MethodEntry> dynamicMethods;
 
-	public Weaver(Set<MethodEntry> methods) {
+	public Weaver(Map<String, MethodEntry> methods) {
 		dynamicMethods = methods;
 	}
 
@@ -62,7 +63,7 @@ public class Weaver {
 		return writer.toByteArray();
 	}
 
-	public static HashSet<MethodEntry> collectAnnotatedMethods(InputStream in)
+	public static Set<MethodEntry> collectAnnotatedMethods(InputStream in)
 			throws IOException {
 		ClassReader reader = new ClassReader(in);
 		ClassVisitor visitor = new EmptyVisitor();
@@ -75,9 +76,7 @@ public class Weaver {
 
 		reader.accept(detector, 0);
 
-		final HashSet<MethodEntry> methods = new HashSet<MethodEntry>(
-				detector.getAnnotationedMethods());
-		return methods;
+		return detector.getAnnotationedMethods();
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -96,7 +95,7 @@ public class Weaver {
 					Objects.requireNonNull(file);
 					Objects.requireNonNull(attrs);
 					if (file.toString().endsWith(".class")) {
-						HashSet<MethodEntry> set = Weaver
+						Set<MethodEntry> set = Weaver
 								.collectAnnotatedMethods(Files.newInputStream(
 										file, StandardOpenOption.READ));
 						methods.addAll(set);
@@ -106,7 +105,12 @@ public class Weaver {
 			});
 		}
 
-		Weaver weaver = new Weaver(methods);
+		Map<String, MethodEntry> map = new HashMap<String, MethodEntry>();
+		for (MethodEntry methodEntry : methods) {
+			map.put(methodEntry.toString(), methodEntry);
+		}
+
+		Weaver weaver = new Weaver(map);
 		for (String path : sourcePaths.split(File.pathSeparator)) {
 			WeaverFileVisitor weaverFileVisitor = new WeaverFileVisitor(weaver,
 					Paths.get(path), Paths.get(destinationPath));

@@ -1,5 +1,7 @@
 package regis.dinvoke.weave;
 
+import regis.dinvoke.BootstrapUtils;
+
 public class MethodEntry {
 
 	private String owner;
@@ -8,10 +10,36 @@ public class MethodEntry {
 
 	private String desc;
 
+	private MethodEntry bootstrap = BootstrapUtils.DEFAULT_BOOTSTRAP;
+
+	public MethodEntry() {
+
+	}
+
 	public MethodEntry(String owner, String name, String desc) {
 		this.owner = owner;
 		this.name = name;
 		this.desc = desc;
+	}
+
+	public MethodEntry getBootstrap() {
+		return bootstrap;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public void setBootstrap(MethodEntry bootstrap) {
+		this.bootstrap = bootstrap;
 	}
 
 	public String getDesc() {
@@ -40,5 +68,9 @@ public class MethodEntry {
 	@Override
 	public int hashCode() {
 		return owner.hashCode() + name.hashCode() + desc.hashCode();
+	}
+
+	public String toString() {
+		return owner + "." + name + desc;
 	}
 }

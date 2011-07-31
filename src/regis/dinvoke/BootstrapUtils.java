@@ -8,7 +8,14 @@ import java.lang.invoke.MethodType;
 
 import org.objectweb.asm.Opcodes;
 
+import regis.dinvoke.weave.MethodEntry;
+
 public class BootstrapUtils {
+
+	public static final MethodEntry DEFAULT_BOOTSTRAP = new MethodEntry(
+			"Lregis/dinvoke/BootstrapUtils;",
+			"bootstrap",
+			"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;");
 
 	public static CallSite bootstrap(Lookup lookup, String name,
 			MethodType methodType, Object... bsmArgs) {

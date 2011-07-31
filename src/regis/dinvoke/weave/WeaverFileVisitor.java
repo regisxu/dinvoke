@@ -2,7 +2,6 @@ package regis.dinvoke.weave;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;

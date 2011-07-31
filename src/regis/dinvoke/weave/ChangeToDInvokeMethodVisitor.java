@@ -1,6 +1,6 @@
 package regis.dinvoke.weave;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.objectweb.asm.MethodAdapter;
@@ -10,10 +10,10 @@ import org.objectweb.asm.Opcodes;
 
 public class ChangeToDInvokeMethodVisitor extends MethodAdapter {
 
-	private Set<MethodEntry> registered = new HashSet<MethodEntry>();
+	private Map<String, MethodEntry> registered;
 
 	public ChangeToDInvokeMethodVisitor(MethodVisitor mv,
-			Set<MethodEntry> registered) {
+			Map<String, MethodEntry> registered) {
 		super(mv);
 		this.registered = registered;
 	}
@@ -21,12 +21,13 @@ public class ChangeToDInvokeMethodVisitor extends MethodAdapter {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name,
 			String desc) {
-		if (registered.contains(new MethodEntry(owner, name, desc))) {
-			MethodHandle bootstrap = new MethodHandle(
-					Opcodes.MH_INVOKESTATIC,
-					"Lregis/dinvoke/BootstrapUtils;",
-					"bootstrap",
-					"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;");
+		MethodEntry method = registered.get(new MethodEntry(owner, name, desc)
+				.toString());
+		if (method != null) {
+			MethodEntry bootstrapDesc = method.getBootstrap();
+			MethodHandle bootstrap = new MethodHandle(Opcodes.MH_INVOKESTATIC,
+					bootstrapDesc.getOwner(), bootstrapDesc.getName(),
+					bootstrapDesc.getDesc());
 
 			mv.visitInvokeDynamicInsn(name, desc, bootstrap, owner, opcode);
 		} else {

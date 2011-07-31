@@ -1,7 +1,7 @@
 package regis.dinvoke.weave;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassAdapter;
@@ -12,12 +12,13 @@ import org.objectweb.asm.MethodVisitor;
 public class AnnotationDetectClassAdapter extends ClassAdapter {
 
 	private String className;
-	
+
 	private String target;
 
-	private List<MethodEntry> found = new LinkedList<MethodEntry>();
+	private Set<MethodEntry> found = new HashSet<MethodEntry>();
 
-	public AnnotationDetectClassAdapter(ClassVisitor cv, String className, String target) {
+	public AnnotationDetectClassAdapter(ClassVisitor cv, String className,
+			String target) {
 		super(cv);
 		this.className = className;
 		this.target = target;
@@ -34,17 +35,23 @@ public class AnnotationDetectClassAdapter extends ClassAdapter {
 			mv = new MethodAdapter(mv) {
 				public AnnotationVisitor visitAnnotation(final String adesc,
 						final boolean visible) {
+					AnnotationVisitor av = mv.visitAnnotation(adesc, visible);
 					if (adesc.equals(target)) {
-						found.add(new MethodEntry(className, name, desc));
+						MethodEntry method = new MethodEntry(className, name,
+								desc);
+						AnnotationAdapter annotationAdapter = new AnnotationAdapter(
+								av, method);
+						found.add(method);
+						return annotationAdapter;
 					}
-					return mv.visitAnnotation(adesc, visible);
+					return av;
 				}
 			};
 		}
 		return mv;
 	}
-	
-	public List<MethodEntry> getAnnotationedMethods() {
+
+	public Set<MethodEntry> getAnnotationedMethods() {
 		return found;
 	}
 }

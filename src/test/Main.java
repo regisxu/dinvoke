@@ -17,6 +17,7 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.EmptyVisitor;
 
+import regis.dinvoke.BootstrapUtils;
 import regis.dinvoke.InvokeDynamic;
 import regis.dinvoke.weave.AnnotationDetectClassAdapter;
 import regis.dinvoke.weave.ChangeToDInvokeMethodVisitor;
@@ -87,55 +88,37 @@ public class Main extends ClassLoader implements Opcodes {
 	}
 
 	public static void main(String[] args) throws Exception {
-//		OutputStream out = Files.newOutputStream(Paths.get("test"));
-//
-//		Class clazz = Test.class;
-//		final HashSet<MethodEntry> methods = detectAnnotationedMethods(
-//				Test.class, InvokeDynamic.class);
-//
-//		ClassReader reader = new ClassReader(clazz.getName());
-//		ClassWriter writer = new ClassWriter(0);
-//		ClassAdapter adapter = new ClassAdapter(writer) {
-//			@Override
-//			public MethodVisitor visitMethod(final int access,
-//					final String name, final String desc,
-//					final String signature, final String[] exceptions) {
-//				MethodVisitor mv = cv.visitMethod(access, name, desc,
-//						signature, exceptions);
-//				if (mv != null) {
-//					mv = new ChangeToDInvokeMethodVisitor(mv, methods);
-//				}
-//
-//				return mv;
-//			}
-//		};
-//
-//		reader.accept(adapter, 0);
-//		byte[] bs = writer.toByteArray();
-//
-//		String path = clazz.getName().replace('.', '/') + ".class";
-//		FileOutputStream fos = new FileOutputStream("inst/" + path);
-//		fos.write(bs);
-//		fos.close();
+		// OutputStream out = Files.newOutputStream(Paths.get("test"));
+		//
+		// Class clazz = Test.class;
+		// final HashSet<MethodEntry> methods = detectAnnotationedMethods(
+		// Test.class, InvokeDynamic.class);
+		//
+		// ClassReader reader = new ClassReader(clazz.getName());
+		// ClassWriter writer = new ClassWriter(0);
+		// ClassAdapter adapter = new ClassAdapter(writer) {
+		// @Override
+		// public MethodVisitor visitMethod(final int access,
+		// final String name, final String desc,
+		// final String signature, final String[] exceptions) {
+		// MethodVisitor mv = cv.visitMethod(access, name, desc,
+		// signature, exceptions);
+		// if (mv != null) {
+		// mv = new ChangeToDInvokeMethodVisitor(mv, methods);
+		// }
+		//
+		// return mv;
+		// }
+		// };
+		//
+		// reader.accept(adapter, 0);
+		// byte[] bs = writer.toByteArray();
+		//
+		// String path = clazz.getName().replace('.', '/') + ".class";
+		// FileOutputStream fos = new FileOutputStream("inst/" + path);
+		// fos.write(bs);
+		// fos.close();
 		new Test().empty();
 		Test.test("hello");
-	}
-
-	private static HashSet<MethodEntry> detectAnnotationedMethods(Class clazz,
-			Class annotion) throws IOException {
-		ClassReader reader = new ClassReader(clazz.getName());
-		ClassVisitor visitor = new EmptyVisitor();
-
-		String annStr = annotion.getName();
-		annStr = annStr.replace('.', '/');
-		annStr = "L" + annStr + ";";
-		AnnotationDetectClassAdapter detector = new AnnotationDetectClassAdapter(
-				visitor, reader.getClassName(), annStr);
-
-		reader.accept(detector, 0);
-
-		final HashSet<MethodEntry> methods = new HashSet<MethodEntry>(
-				detector.getAnnotationedMethods());
-		return methods;
 	}
 }
