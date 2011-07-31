@@ -2,7 +2,10 @@ package test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.invoke.MethodType;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 
 import org.objectweb.asm.ClassAdapter;
@@ -84,36 +87,38 @@ public class Main extends ClassLoader implements Opcodes {
 	}
 
 	public static void main(String[] args) throws Exception {
-
-		Class clazz = Test.class;
-		final HashSet<MethodEntry> methods = detectAnnotationedMethods(
-				Test.class, InvokeDynamic.class);
-
-		ClassReader reader = new ClassReader(clazz.getName());
-		ClassWriter writer = new ClassWriter(0);
-		ClassAdapter adapter = new ClassAdapter(writer) {
-			@Override
-			public MethodVisitor visitMethod(final int access,
-					final String name, final String desc,
-					final String signature, final String[] exceptions) {
-				MethodVisitor mv = cv.visitMethod(access, name, desc,
-						signature, exceptions);
-				if (mv != null) {
-					mv = new ChangeToDInvokeMethodVisitor(mv, methods);
-				}
-
-				return mv;
-			}
-		};
-
-		reader.accept(adapter, 0);
-		byte[] bs = writer.toByteArray();
-
-		String path = clazz.getName().replace('.', '/') + ".class";
-		FileOutputStream fos = new FileOutputStream("inst/" + path);
-		fos.write(bs);
-		fos.close();
-
+//		OutputStream out = Files.newOutputStream(Paths.get("test"));
+//
+//		Class clazz = Test.class;
+//		final HashSet<MethodEntry> methods = detectAnnotationedMethods(
+//				Test.class, InvokeDynamic.class);
+//
+//		ClassReader reader = new ClassReader(clazz.getName());
+//		ClassWriter writer = new ClassWriter(0);
+//		ClassAdapter adapter = new ClassAdapter(writer) {
+//			@Override
+//			public MethodVisitor visitMethod(final int access,
+//					final String name, final String desc,
+//					final String signature, final String[] exceptions) {
+//				MethodVisitor mv = cv.visitMethod(access, name, desc,
+//						signature, exceptions);
+//				if (mv != null) {
+//					mv = new ChangeToDInvokeMethodVisitor(mv, methods);
+//				}
+//
+//				return mv;
+//			}
+//		};
+//
+//		reader.accept(adapter, 0);
+//		byte[] bs = writer.toByteArray();
+//
+//		String path = clazz.getName().replace('.', '/') + ".class";
+//		FileOutputStream fos = new FileOutputStream("inst/" + path);
+//		fos.write(bs);
+//		fos.close();
+		new Test().empty();
+		Test.test("hello");
 	}
 
 	private static HashSet<MethodEntry> detectAnnotationedMethods(Class clazz,

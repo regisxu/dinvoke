@@ -25,7 +25,6 @@ import org.objectweb.asm.commons.EmptyVisitor;
 
 import regis.dinvoke.InvokeDynamic;
 
-
 public class Weaver {
 
 	private Set<MethodEntry> dynamicMethods;
@@ -63,7 +62,8 @@ public class Weaver {
 		return writer.toByteArray();
 	}
 
-	public static HashSet<MethodEntry> collectAnnotatedMethods(InputStream in) throws IOException {
+	public static HashSet<MethodEntry> collectAnnotatedMethods(InputStream in)
+			throws IOException {
 		ClassReader reader = new ClassReader(in);
 		ClassVisitor visitor = new EmptyVisitor();
 
@@ -79,34 +79,26 @@ public class Weaver {
 				detector.getAnnotationedMethods());
 		return methods;
 	}
-	
-	public static void main(String[] args) {
+
+	public static void main(String[] args) throws Exception {
 		Map<String, String> options = new HashMap<String, String>();
 		options = parseArgs(args);
-		String sourcePaths = null;
-		String destinationPath = null;
-		for (Map.Entry<String, String> entry : options.entrySet()) {
-			switch (entry.getKey()) {
-			case "-s":
-				sourcePaths = entry.getValue();
-				break;
-			case "-d":
-				destinationPath = entry.getValue();
-				break;
-			}
-		}
+
+		String sourcePaths = options.get("-s");
+		String destinationPath = options.get("-d");
 
 		final Set<MethodEntry> methods = new HashSet<MethodEntry>();
 		for (String path : sourcePaths.split(File.pathSeparator)) {
 			Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
 				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
-						throws IOException {
+				public FileVisitResult visitFile(Path file,
+						BasicFileAttributes attrs) throws IOException {
 					Objects.requireNonNull(file);
 					Objects.requireNonNull(attrs);
 					if (file.toString().endsWith(".class")) {
-						HashSet<MethodEntry> set = Weaver.collectAnnotatedMethods(Files
-								.newInputStream(file, StandardOpenOption.READ));
+						HashSet<MethodEntry> set = Weaver
+								.collectAnnotatedMethods(Files.newInputStream(
+										file, StandardOpenOption.READ));
 						methods.addAll(set);
 					}
 					return FileVisitResult.CONTINUE;
@@ -123,7 +115,34 @@ public class Weaver {
 	}
 
 	private static Map<String, String> parseArgs(String[] args) {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String> map = new HashMap<String, String>();
+		for (int i = 0; i < args.length; ++i) {
+			switch (args[i]) {
+			case "-s":
+			case "-d":
+				if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+					map.put(args[i], args[i + 1]);
+					++i;
+					break;
+				}
+			default:
+				System.err.println("Invalidate options!");
+				printHelp();
+				System.exit(1);
+			}
+		}
+
+		if (!(map.containsKey("-s") && map.containsKey("-d"))) {
+			System.err.println("Invalidate options!");
+			printHelp();
+			System.exit(1);
+		}
+
+		return map;
+	}
+
+	private static void printHelp() {
+		String helpMsg = "Weaver -s <source paths> -d <destination path>";
+		System.err.println(helpMsg);
 	}
 }

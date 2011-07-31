@@ -2,6 +2,7 @@ package regis.dinvoke.weave;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileSystem;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,7 +10,6 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Objects;
-
 
 public class WeaverFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -35,8 +35,8 @@ public class WeaverFileVisitor extends SimpleFileVisitor<Path> {
 					StandardOpenOption.READ));
 			Path sub = file.subpath(src.getNameCount(), file.getNameCount());
 			Path dest = destDir.resolve(sub);
-			OutputStream out = Files.newOutputStream(dest,
-					StandardOpenOption.WRITE);
+			Files.createDirectories(dest.getParent());
+			OutputStream out = Files.newOutputStream(dest);
 			out.write(bs);
 			out.close();
 		}

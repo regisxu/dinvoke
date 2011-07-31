@@ -1,9 +1,14 @@
 package test;
+
 import java.lang.invoke.CallSite;
 import java.lang.invoke.ConstantCallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 
+import regis.dinvoke.BootstrapUtils;
 import regis.dinvoke.InvokeDynamic;
 
 public class Test {
@@ -13,7 +18,7 @@ public class Test {
 	}
 
 	@InvokeDynamic
-	public static void empty() {
+	public void empty() {
 		System.out.println("empty");
 	}
 
@@ -32,8 +37,8 @@ public class Test {
 		// System.out.println(site.getTarget().type());
 		// return new ConstantCallSite(m);
 		try {
-			return new ConstantCallSite(lookup.findStatic(Test.class,
-					name, methodType));
+			return new ConstantCallSite(lookup.findStatic(Test.class, name,
+					methodType));
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
@@ -44,8 +49,18 @@ public class Test {
 	}
 
 	public static void main(String[] args) throws Throwable {
-		Test.empty();
-		Test.test("hello world");
+		// Test.empty();
+		// Test.test("hello world");
+		Lookup lookup = MethodHandles.lookup();
+
+		Method[] ms = BootstrapUtils.class.getDeclaredMethods();
+		for (Method method : ms) {
+			if (method.getName().equals("bootstrap")) {
+				MethodHandle mh = lookup.unreflect(method);
+				System.out.println(mh.type().toMethodDescriptorString());
+
+			}
+		}
 
 	}
 }

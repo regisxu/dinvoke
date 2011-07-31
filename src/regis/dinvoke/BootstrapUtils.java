@@ -14,10 +14,9 @@ public class BootstrapUtils {
 			MethodType methodType, Object... bsmArgs) {
 
 		try {
-			Class owner = Class.forName((String) bsmArgs[0], true, lookup
-					.getClass().getClassLoader());
+			String className = ((String) bsmArgs[0]).replace('/', '.');
+			Class owner = Class.forName(className);
 			int opcode = ((Integer) bsmArgs[1]).intValue();
-
 			MethodHandle handler = null;
 			switch (opcode) {
 			case Opcodes.INVOKEINTERFACE:

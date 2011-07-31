@@ -24,11 +24,11 @@ public class ChangeToDInvokeMethodVisitor extends MethodAdapter {
 		if (registered.contains(new MethodEntry(owner, name, desc))) {
 			MethodHandle bootstrap = new MethodHandle(
 					Opcodes.MH_INVOKESTATIC,
-					"Test",
-					"boostrap",
-					"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;");
+					"Lregis/dinvoke/BootstrapUtils;",
+					"bootstrap",
+					"(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;");
 
-			mv.visitInvokeDynamicInsn(name, desc, bootstrap);
+			mv.visitInvokeDynamicInsn(name, desc, bootstrap, owner, opcode);
 		} else {
 			mv.visitMethodInsn(opcode, owner, name, desc);
 		}
