@@ -1,7 +1,6 @@
 package regis.dinvoke.weave;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodHandle;

@@ -1,27 +1,12 @@
 package test;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.invoke.MethodType;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashSet;
 
-import org.objectweb.asm.ClassAdapter;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodHandle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.commons.EmptyVisitor;
-
-import regis.dinvoke.BootstrapUtils;
-import regis.dinvoke.InvokeDynamic;
-import regis.dinvoke.weave.AnnotationDetectClassAdapter;
-import regis.dinvoke.weave.ChangeToDInvokeMethodVisitor;
-import regis.dinvoke.weave.MethodEntry;
 
 public class Main extends ClassLoader implements Opcodes {
 

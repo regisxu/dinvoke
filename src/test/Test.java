@@ -8,7 +8,6 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
-import regis.dinvoke.Bootstrap;
 import regis.dinvoke.BootstrapUtils;
 import regis.dinvoke.InvokeDynamic;
 

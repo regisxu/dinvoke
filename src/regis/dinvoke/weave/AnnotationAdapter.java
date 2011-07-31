@@ -2,7 +2,6 @@ package regis.dinvoke.weave;
 
 import org.objectweb.asm.AnnotationVisitor;
 
-import regis.dinvoke.Bootstrap;
 import regis.dinvoke.BootstrapUtils;
 
 public class AnnotationAdapter implements AnnotationVisitor {
