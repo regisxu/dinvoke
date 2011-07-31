@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ======================================================================
+     Jul 31, 2011 2:02:41 PM
+
+     Dinvoke
+     Generate invokedynamice instrument from java code
+
+     regis
+     ====================================================================== -->
+<project name="Dinvoke" default="compile" basedir=".">
+    <description>
+            Generate invokedynamice instrument from java code
+    </description>
+
+    <property name="src.dir" location="${basedir}/src" />
+    <property name="classes.dir" location="${basedir}/bin" />
+    <property name="inst.dir" location="${basedir}/inst" />
+
+    <!-- =================================
+          target: default
+         ================================= -->
+    <target name="compile" depends="" description="Generate invokedynamice instrument from java code">
+        <mkdir dir="${classes.dir}" />
+        <javac source="1.7" target="1.7" srcdir="${src.dir}" destdir="${classes.dir}" debug="true" includeantruntime="false">
+            <classpath>
+                <fileset dir="${basedir}/lib">
+                    <include name="*.jar" />
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="clean">
+        <delete dir="${classes.dir}" />
+        <delete dir="${inst.dir}" />
+    </target>
+</project>
