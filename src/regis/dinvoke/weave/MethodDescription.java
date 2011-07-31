@@ -2,7 +2,7 @@ package regis.dinvoke.weave;
 
 import regis.dinvoke.BootstrapUtils;
 
-public class MethodEntry {
+public class MethodDescription {
 
 	private String owner;
 
@@ -10,35 +10,35 @@ public class MethodEntry {
 
 	private String desc;
 
-	private MethodEntry bootstrap = BootstrapUtils.DEFAULT_BOOTSTRAP;
+	private MethodDescription bootstrap = BootstrapUtils.DEFAULT_BOOTSTRAP;
 
-	public MethodEntry() {
+	public MethodDescription() {
 
 	}
 
-	public MethodEntry(String owner, String name, String desc) {
+	public MethodDescription(String owner, String name, String desc) {
 		this.owner = owner;
 		this.name = name;
 		this.desc = desc;
 	}
 
-	public MethodEntry getBootstrap() {
+	public MethodDescription getBootstrap() {
 		return bootstrap;
 	}
 
-	public void setOwner(String owner) {
+	void setOwner(String owner) {
 		this.owner = owner;
 	}
 
-	public void setName(String name) {
+	void setName(String name) {
 		this.name = name;
 	}
 
-	public void setDesc(String desc) {
+	void setDesc(String desc) {
 		this.desc = desc;
 	}
 
-	public void setBootstrap(MethodEntry bootstrap) {
+	void setBootstrap(MethodDescription bootstrap) {
 		this.bootstrap = bootstrap;
 	}
 
@@ -56,8 +56,8 @@ public class MethodEntry {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof MethodEntry) {
-			MethodEntry entry = (MethodEntry) o;
+		if (o instanceof MethodDescription) {
+			MethodDescription entry = (MethodDescription) o;
 			return this.desc.equals(entry.desc)
 					&& this.owner.equals(entry.owner)
 					&& this.name.equals(entry.name);

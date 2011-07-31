@@ -9,15 +9,15 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodAdapter;
 import org.objectweb.asm.MethodVisitor;
 
-public class AnnotationDetectClassAdapter extends ClassAdapter {
+public class AnnotationDetector extends ClassAdapter {
 
 	private String className;
 
 	private String target;
 
-	private Set<MethodEntry> found = new HashSet<MethodEntry>();
+	private Set<MethodDescription> found = new HashSet<MethodDescription>();
 
-	public AnnotationDetectClassAdapter(ClassVisitor cv, String className,
+	public AnnotationDetector(ClassVisitor cv, String className,
 			String target) {
 		super(cv);
 		this.className = className;
@@ -37,7 +37,7 @@ public class AnnotationDetectClassAdapter extends ClassAdapter {
 						final boolean visible) {
 					AnnotationVisitor av = mv.visitAnnotation(adesc, visible);
 					if (adesc.equals(target)) {
-						MethodEntry method = new MethodEntry(className, name,
+						MethodDescription method = new MethodDescription(className, name,
 								desc);
 						AnnotationAdapter annotationAdapter = new AnnotationAdapter(
 								av, method);
@@ -51,7 +51,7 @@ public class AnnotationDetectClassAdapter extends ClassAdapter {
 		return mv;
 	}
 
-	public Set<MethodEntry> getAnnotationedMethods() {
+	public Set<MethodDescription> getAnnotationedMethods() {
 		return found;
 	}
 }

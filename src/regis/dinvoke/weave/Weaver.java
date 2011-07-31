@@ -27,9 +27,9 @@ import regis.dinvoke.InvokeDynamic;
 
 public class Weaver {
 
-	private Map<String, MethodEntry> dynamicMethods;
+	private Map<String, MethodDescription> dynamicMethods;
 
-	public Weaver(Map<String, MethodEntry> methods) {
+	public Weaver(Map<String, MethodDescription> methods) {
 		dynamicMethods = methods;
 	}
 
@@ -51,7 +51,7 @@ public class Weaver {
 				MethodVisitor mv = cv.visitMethod(access, name, desc,
 						signature, exceptions);
 				if (mv != null) {
-					mv = new ChangeToDInvokeMethodVisitor(mv, dynamicMethods);
+					mv = new DInvokeGenerator(mv, dynamicMethods);
 				}
 
 				return mv;
@@ -62,7 +62,7 @@ public class Weaver {
 		return writer.toByteArray();
 	}
 
-	public static Set<MethodEntry> collectAnnotatedMethods(InputStream in)
+	public static Set<MethodDescription> collectAnnotatedMethods(InputStream in)
 			throws IOException {
 		ClassReader reader = new ClassReader(in);
 		ClassVisitor visitor = new EmptyVisitor();
@@ -70,7 +70,7 @@ public class Weaver {
 		String annStr = InvokeDynamic.class.getName();
 		annStr = annStr.replace('.', '/');
 		annStr = "L" + annStr + ";";
-		AnnotationDetectClassAdapter detector = new AnnotationDetectClassAdapter(
+		AnnotationDetector detector = new AnnotationDetector(
 				visitor, reader.getClassName(), annStr);
 
 		reader.accept(detector, 0);
@@ -85,7 +85,7 @@ public class Weaver {
 		String sourcePaths = options.get("-s");
 		String destinationPath = options.get("-d");
 
-		final Set<MethodEntry> methods = new HashSet<MethodEntry>();
+		final Set<MethodDescription> methods = new HashSet<MethodDescription>();
 		for (String path : sourcePaths.split(File.pathSeparator)) {
 			Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
 				@Override
@@ -94,7 +94,7 @@ public class Weaver {
 					Objects.requireNonNull(file);
 					Objects.requireNonNull(attrs);
 					if (file.toString().endsWith(".class")) {
-						Set<MethodEntry> set = Weaver
+						Set<MethodDescription> set = Weaver
 								.collectAnnotatedMethods(Files.newInputStream(
 										file, StandardOpenOption.READ));
 						methods.addAll(set);
@@ -104,8 +104,8 @@ public class Weaver {
 			});
 		}
 
-		Map<String, MethodEntry> map = new HashMap<String, MethodEntry>();
-		for (MethodEntry methodEntry : methods) {
+		Map<String, MethodDescription> map = new HashMap<String, MethodDescription>();
+		for (MethodDescription methodEntry : methods) {
 			map.put(methodEntry.toString(), methodEntry);
 		}
 

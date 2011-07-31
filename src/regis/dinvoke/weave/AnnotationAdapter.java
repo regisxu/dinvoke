@@ -8,16 +8,16 @@ public class AnnotationAdapter implements AnnotationVisitor {
 
 	private AnnotationVisitor av;
 
-	private MethodEntry method;
+	private MethodDescription method;
 
-	public AnnotationAdapter(AnnotationVisitor av, MethodEntry method) {
+	public AnnotationAdapter(AnnotationVisitor av, MethodDescription method) {
 		this.av = av;
 		this.method = method;
 	}
 
 	@Override
 	public void visit(String name, Object value) {
-		MethodEntry bootstrap = method.getBootstrap();
+		MethodDescription bootstrap = method.getBootstrap();
 		switch (name) {
 		case "className":
 			if (value == null || "".equals(value)) {
@@ -42,7 +42,7 @@ public class AnnotationAdapter implements AnnotationVisitor {
 		}
 	}
 
-	public MethodEntry getMethod() {
+	public MethodDescription getMethod() {
 		return method;
 	}
 
@@ -54,7 +54,7 @@ public class AnnotationAdapter implements AnnotationVisitor {
 	@Override
 	public AnnotationVisitor visitAnnotation(String name, String desc) {
 		if (name.equals("bootstrap")) {
-			method.setBootstrap(new MethodEntry());
+			method.setBootstrap(new MethodDescription());
 			return this;
 		} else {
 			return av;

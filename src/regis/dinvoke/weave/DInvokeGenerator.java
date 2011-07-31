@@ -7,12 +7,12 @@ import org.objectweb.asm.MethodHandle;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class ChangeToDInvokeMethodVisitor extends MethodAdapter {
+public class DInvokeGenerator extends MethodAdapter {
 
-	private Map<String, MethodEntry> registered;
+	private Map<String, MethodDescription> registered;
 
-	public ChangeToDInvokeMethodVisitor(MethodVisitor mv,
-			Map<String, MethodEntry> registered) {
+	public DInvokeGenerator(MethodVisitor mv,
+			Map<String, MethodDescription> registered) {
 		super(mv);
 		this.registered = registered;
 	}
@@ -20,10 +20,10 @@ public class ChangeToDInvokeMethodVisitor extends MethodAdapter {
 	@Override
 	public void visitMethodInsn(int opcode, String owner, String name,
 			String desc) {
-		MethodEntry method = registered.get(new MethodEntry(owner, name, desc)
+		MethodDescription method = registered.get(new MethodDescription(owner, name, desc)
 				.toString());
 		if (method != null) {
-			MethodEntry bootstrapDesc = method.getBootstrap();
+			MethodDescription bootstrapDesc = method.getBootstrap();
 			MethodHandle bootstrap = new MethodHandle(Opcodes.MH_INVOKESTATIC,
 					bootstrapDesc.getOwner(), bootstrapDesc.getName(),
 					bootstrapDesc.getDesc());
